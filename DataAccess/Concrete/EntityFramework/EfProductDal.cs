@@ -24,7 +24,7 @@ namespace DataAccess.Concrete.EntityFramework
                              on p.CategoryID equals c.CategoryID
                              select new ProductDetailDto
                              {
-                                 ProductId = p.ProductID,
+                                 ProductID = p.ProductID,
                                  ProductName = p.ProductName,
                                  CategoryName = c.CategoryName,
                                  UnitsInStock = p.UnitsInStock
