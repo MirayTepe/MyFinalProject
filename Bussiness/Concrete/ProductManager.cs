@@ -3,6 +3,7 @@ using Bussiness.Abstract;
 using Bussiness.CCS;
 using Bussiness.Constants;
 using Bussiness.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Bussiness;
@@ -33,8 +34,9 @@ namespace Bussiness.Concrete
             _productDal = productDal;
             _categoryService = categoryService;
         }
-        [SecuredOperation("product.add,admin")]
+ 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
            IResult result= BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryID), CheckIfProductNameExists(product.ProductName),CheckIfCategoryLimitExceded());
@@ -48,7 +50,14 @@ namespace Bussiness.Concrete
 
         
         }
+        public IResult Delete(Product product)
+        {
+            _productDal.Delete(product);
+            return new SuccessResult(Messages.ProductDeleted);
 
+        }
+
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             if (DateTime.Now.Hour == 1)
@@ -63,6 +72,7 @@ namespace Bussiness.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p=>p.CategoryID==id));
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult <Product>( _productDal.Get(p=>p.ProductID==productId));
@@ -77,12 +87,17 @@ namespace Bussiness.Concrete
         {
             return new SuccessDataResult<List<ProductDetailDto>>( _productDal.GetProductDetails());
         }
-        [ValidationAspect(typeof(ValidationAspect))]
+
+
+        [ValidationAspect(typeof(ProductValidator))]
+        //[CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
 
+           _productDal.Update(product);
+            return new SuccessResult(Messages.ProductUpdated);
            
-            throw new NotImplementedException();
+           
         }
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
@@ -114,5 +129,7 @@ namespace Bussiness.Concrete
             }
             return new SuccessResult();
         }
+
+       
     }
 }

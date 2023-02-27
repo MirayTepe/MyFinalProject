@@ -13,6 +13,8 @@ using DataAccess.Concrete.EntityFramework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Core.Extensions;
+using Core.DependencyResolvers;
 
 namespace WebApplication5
 {
@@ -39,7 +41,7 @@ namespace WebApplication5
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+           
 
             var tokenOptions =builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
@@ -57,7 +59,7 @@ namespace WebApplication5
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
-            ServiceTool.Create(builder.Services);
+            builder.Services.AddDependencyResolvers(new ICoreModule[]{ new  CoreModule()});
 
             var app = builder.Build();
 
