@@ -10,7 +10,10 @@ namespace Core.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDependencyResolvers(this IServiceCollection serviceCollection, ICoreModule[] modules) 
+        //IServiceCollection ASP net uygulamamızın (API'de)  servis bağımlılıklarını eklediğimiz ve/veya
+        //Araya girmesini istediğimiz servisleri eklediğimiz collection'dır
+        public static IServiceCollection AddDependencyResolvers
+            (this IServiceCollection serviceCollection, ICoreModule[] modules)
         {
             foreach (var module in modules)
             {
@@ -18,5 +21,7 @@ namespace Core.Extensions
             }
             return ServiceTool.Create(serviceCollection);
         }
+        //Core katmanı da dahil olmak üzere ICoreModule üzerinden eklenecek bütün injection'ları bir arada toplayabilen yapı
+        //ICoreModule'a göre WebAPI'da instance'ı istenilen CoreModule array olarak parametre verilir
     }
 }

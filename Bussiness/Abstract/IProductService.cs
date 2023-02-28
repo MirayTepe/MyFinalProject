@@ -1,5 +1,4 @@
 ﻿using Core.Utilities.Results;
-using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -8,20 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bussiness.Abstract
+namespace Business.Abstract
 {
     public interface IProductService
     {
         IDataResult<List<Product>> GetAll();
-        IDataResult<List<Product>> GetAllByCategory(int id);
+        IDataResult<List<Product>> GetAllByCategoryId(int categoryID);
 
         IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max);
+
+        IResult Update(Product product);
+        IResult Delete(Product product);
+        IResult Add(Product product);
+        IDataResult<Product> GetById(int productId);
         IDataResult<List<ProductDetailDto>> GetProductDetails();
 
-        IDataResult<Product> GetById(int productId);
-        IResult Add(Product product);
-        IResult Update(Product product);
-
-        IResult Delete(Product product);
     }
 }

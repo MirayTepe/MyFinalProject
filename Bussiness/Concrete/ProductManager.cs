@@ -1,4 +1,5 @@
-﻿using Business.BusinessAspects.Autofac;
+﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Bussiness.Abstract;
 using Bussiness.CCS;
 using Bussiness.Constants;
@@ -6,12 +7,11 @@ using Bussiness.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
-using Core.Utilities.Bussiness;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
-using Core.Utilities.Results.Abstract;
-using Core.Utilities.Results.Concrete;
+
 using DataAccess.Abstract;
-//using DataAccess.Concrete.InMemory;
+
 using Entities.Concrete;
 using Entities.DTOs;
 using FluentValidation;
@@ -35,7 +35,7 @@ namespace Bussiness.Concrete
             _categoryService = categoryService;
         }
  
-        [ValidationAspect(typeof(ProductValidator))]
+        //[ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
@@ -67,9 +67,16 @@ namespace Bussiness.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
         }
 
-        public IDataResult<List<Product>> GetAllByCategory(int id)
+        [CacheAspect]
+        public IDataResult<List<Product>> GetAllByCategoryId(int categoryId)
         {
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p=>p.CategoryID==id));
+            var result = _productDal.GetAll(p => p.CategoryID == categoryId);
+
+            if (result == null)
+            {
+                return new ErrorDataResult<List<Product>>(Messages.ProductNotFound);
+            }
+            return new SuccessDataResult<List<Product>>(result, Messages.ProductsListed);
         }
 
         [CacheAspect]
@@ -90,7 +97,7 @@ namespace Bussiness.Concrete
 
 
         [ValidationAspect(typeof(ProductValidator))]
-        //[CacheRemoveAspect("IProductService.Get")]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
 

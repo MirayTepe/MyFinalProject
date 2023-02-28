@@ -4,11 +4,14 @@ namespace Core.Utilities.Interceptors
 {
     public abstract class MethodInterception : MethodInterceptionBaseAttribute
     {
-        //invocation : businesss method
+        //Validation'da aşağıdakilerden hangisi doldurulursa o aşamada çalışacak
+        //Invoication : business method
         protected virtual void OnBefore(IInvocation invocation) { }
         protected virtual void OnAfter(IInvocation invocation) { }
         protected virtual void OnException(IInvocation invocation, System.Exception e) { }
         protected virtual void OnSuccess(IInvocation invocation) { }
+
+        //Bütün methodlar aşağıdaki method'dan geçerek yazılan attribute'a göre çalışacak
         public override void Intercept(IInvocation invocation)
         {
             var isSuccess = true;

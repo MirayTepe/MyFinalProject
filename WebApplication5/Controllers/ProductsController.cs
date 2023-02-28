@@ -1,4 +1,5 @@
-﻿using Bussiness.Abstract;
+﻿using Business.Abstract;
+using Bussiness.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ namespace WebApplication5.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        IProductService _productService;
+       IProductService _productService;
         public ProductsController(IProductService productService) {
         
           _productService= productService;
@@ -29,6 +30,17 @@ namespace WebApplication5.Controllers
         public IActionResult Add(Product product)
         {
             var result = _productService.Add(product);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+        }
+        [HttpPost("update")]
+        public IActionResult Update(Product product)
+        {
+            var result = _productService.Update(product);
             if (result.Success)
             {
                 return Ok(result);

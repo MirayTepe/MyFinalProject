@@ -1,20 +1,22 @@
-
+﻿
 using Autofac;
 using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using Bussiness.Abstract;
 using Bussiness.Concrete;
 using Bussiness.DependencyResolvers.Autofac;
-using Core.Utilities.IoC;
+
 using Core.Utilities.Security.Encryption;
-using Core.Utilities.Security.Jwt;
+
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Core.Extensions;
-using Core.DependencyResolvers;
+
+using Core.Utilities.Security.JWT;
+using Core.Utilities.IoC;
 
 namespace WebApplication5
 {
@@ -41,9 +43,11 @@ namespace WebApplication5
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-           
 
-            var tokenOptions =builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            IConfiguration configuration = builder.Configuration;
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            var tokenOptions =configuration.GetSection("TokenOptions").Get<TokenOptions>();
+
 
              builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -59,8 +63,18 @@ namespace WebApplication5
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
+            ServiceTool.Create(builder.Services);
             builder.Services.AddDependencyResolvers(new ICoreModule[]{ new  CoreModule()});
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
+       
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+            builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+            {
+                builder.RegisterModule(new AutofacBusinessModule());
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

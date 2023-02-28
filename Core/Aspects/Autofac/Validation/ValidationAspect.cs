@@ -10,23 +10,36 @@ using System.Threading.Tasks;
 
 namespace Core.Aspects.Autofac.Validation
 {
-    public class ValidationAspect : MethodInterception
+    public class ValidationAspect : MethodInterception //Aspect
     {
         private Type _validatorType;
+
+        //validatorType üzerinden "typeof(Validator ismi)" ctor'da girilir.
+        //Attribute'de Type'la geçilir.
         public ValidationAspect(Type validatorType)
         {
+            //defensive coding;
+            //verilen validatorType'ın IValidator olup olmadığı kontrolü yapılır
             if (!typeof(IValidator).IsAssignableFrom(validatorType))
             {
                 throw new System.Exception("Bu bir doğrulama sınıfı değil");
             }
 
+            //Validator type yakalanır
             _validatorType = validatorType;
         }
+        //IInvocation Castle.Dynamic.Proxy'den gelir.
         protected override void OnBefore(IInvocation invocation)
         {
+            //Reflection Run-Time'da validasyon tipi new'lenir
             var validator = (IValidator)Activator.CreateInstance(_validatorType);
+
+            //Validator'ın çalışma tiplerinden (Basetype) ilki yakalanır
             var entityType = _validatorType.BaseType.GetGenericArguments()[0];
+            //Ilgili method'un parametrelerine bakılıp Validator'ın tipine eşit olan parametreler bulunur
             var entities = invocation.Arguments.Where(t => t.GetType() == entityType);
+
+            //ValidationTool kullanılarak Validate edilir.
             foreach (var entity in entities)
             {
                 ValidationTool.Validate(validator, entity);
@@ -34,4 +47,3 @@ namespace Core.Aspects.Autofac.Validation
         }
     }
 }
-

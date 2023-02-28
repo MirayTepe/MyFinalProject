@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Business.Concrete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Results.Concrete
+namespace Core.Utilities.Results
 {
-    public class ErrorDataResult<T> : DataResult<T>
+    public class ErrorDataResult<T>:DataResult<T>
     {
         public ErrorDataResult(T data, string message) : base(data, false, message)
         {
@@ -23,9 +24,6 @@ namespace Core.Utilities.Results.Concrete
         public ErrorDataResult() : base(default, false)
         {
 
-
         }
-
-
     }
 }

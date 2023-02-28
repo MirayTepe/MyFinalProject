@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
+
+    //kişinin claim'lerine erişmek adına oluşturulan extension
+    //"?" null olabileceği anlamına gelir. Kullanıcının tanımlanmış claim'i olmayabilir
     public static class ClaimsPrincipalExtensions
     {
         public static List<string> Claims(this ClaimsPrincipal claimsPrincipal, string claimType)
@@ -15,6 +18,8 @@ namespace Core.Extensions
             return result;
         }
 
+
+        //Direkt rolleri döndürür
         public static List<string> ClaimRoles(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal?.Claims(ClaimTypes.Role);

@@ -1,13 +1,14 @@
 ﻿using Core.Entities.Concrete;
-using Core.Utilities.Results.Abstract;
+
 using Core.Utilities.Results;
-using Core.Utilities.Security.Jwt;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities.DTOs;
+using Core.Utilities.Security.JWT;
 
 namespace Business.Abstract
 {

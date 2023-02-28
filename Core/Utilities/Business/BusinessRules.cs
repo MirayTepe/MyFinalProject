@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Bussiness
+namespace Core.Utilities.Business
 {
     public class BusinessRules
     {
@@ -15,11 +15,11 @@ namespace Core.Utilities.Bussiness
             {
                 if (!logic.Success)
                 {
+                   
                     return logic;
                 }
             }
             return null;
         }
-
     }
 }

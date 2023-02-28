@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Results.Concrete
+namespace Core.Utilities.Results
 {
     public class Result : IResult
     {
-
-        public Result(bool success, string message):this(success)
+        //field'lar ctor'da set edilebilir. O yüzden set; girilmedi.
+        public Result(bool success, string message) : this(success)
         {
-            Message= message;
-           
+            Message = message;
         }
+
         public Result(bool success)
         {
             Success = success;
@@ -23,4 +23,4 @@ namespace Core.Utilities.Results.Concrete
 
         public string Message { get; }
     }
-}   
+}
